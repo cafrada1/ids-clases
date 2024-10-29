@@ -1,5 +1,4 @@
 from sqlalchemy import text, create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
 
 QUERY_TODOS_LOS_ALUMNOS = "SELECT padron, nombre, apellido FROM alumnos"
 
@@ -20,8 +19,6 @@ WHERE nombre = :nombre and apellido = :apellido
 
 # string de conexión a la base de datos: mysql://usuario:password@host:puerto/nombre_schema
 engine = create_engine("mysql://root:root@localhost:3306/IDS_API")
-
-Session = scoped_session(sessionmaker(bind=engine))
 
 def run_query(query, parameters=None):
     with engine.connect() as conn:
