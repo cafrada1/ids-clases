@@ -145,26 +145,13 @@ def delete_alumno(padron):
 def buscar_alumnos(argumentos):
     query = QUERY_TODOS_LOS_ALUMNOS
 
-    """"
-    Si estan mas cancheros con esto, pueden hacerlo asi:
-    query_filtros = " AND ".join([f"{key} = :{key}" for key, value in argumentos.items()])
-    query_filtros = f" WHERE {query_filtros}" if len(query_filtros) > 0 else ""
-    """
+    filtros = " AND ".join([f"{key} = '{value}' " for key, value in argumentos.items()])
+    filtros = f" WHERE {filtros}" if len(filtros) > 0 else ""
 
-    parametros = {}
-    query_filtros = ""
-    for filtro in argumentos.keys():
-        if filtro in request.args:
-            if len(query_filtros) > 0:
-                query_filtros += " AND "
-            query_filtros += f"{filtro} = :{filtro}"
-            parametros[filtro] = request.args[filtro]
-
-    if len(query_filtros) > 0:
-        query += f" WHERE {query_filtros}"
+    query += filtros
 
     conn = Session()
-    result = conn.execute(text(query), parametros).fetchall()
+    result = conn.execute(text(query)).fetchall()
     conn.close()
 
     return result
