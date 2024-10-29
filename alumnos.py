@@ -23,40 +23,30 @@ engine = create_engine("mysql://root:root@localhost:3306/IDS_API")
 
 Session = scoped_session(sessionmaker(bind=engine))
 
-def all_alumnos():
-    conn = Session()
-    result = conn.execute(text(QUERY_TODOS_LOS_ALUMNOS)).fetchall()
-    conn.close()
+def run_query(query, parameters=None):
+    with engine.connect() as conn:
+        result = conn.execute(text(query), parameters)
+        conn.commit()
 
     return result
+
+def all_alumnos():
+    return run_query(QUERY_TODOS_LOS_ALUMNOS).fetchall()
 
 def alumno_by_id(padron):
-    conn = Session()
-    result = conn.execute(text(QUERY_ALUMNO_BY_ID), {'padron': padron}).fetchall()
-    conn.close()
-
-    return result
+    return run_query(QUERY_ALUMNO_BY_ID, {'padron': padron}).fetchall()
 
 
 def insert_alumno(data):
-    conn = Session()
-    conn.execute(text(QUERY_INGRESAR_ALUMNO), params=data)
-    conn.commit()
-    conn.close()
+    run_query(QUERY_INGRESAR_ALUMNO, data)
 
 
 def actualizar_alumno(padron, data):
-    conn = Session()
-    conn.execute(text(QUERY_ACTUALIZAR_ALUMNO), params={'padron': padron, **data})
-    conn.commit()
-    conn.close()
+    run_query(text(QUERY_ACTUALIZAR_ALUMNO), {'padron': padron, **data})
 
 
 def borra_alumno(padron):
-    conn = Session()
-    conn.execute(text(QUERY_BORRAR_ALUMNO), {'padron': padron})
-    conn.commit()
-    conn.close()
+    run_query(text(QUERY_BORRAR_ALUMNO), {'padron': padron})
 
 
 def buscar_alumnos(argumentos):
@@ -67,18 +57,10 @@ def buscar_alumnos(argumentos):
 
     query += filtros
 
-    conn = Session()
-    result = conn.execute(text(query)).fetchall()
-    conn.close()
-
-    return result
+    return run_query(query).fetchall()
 
 
 def notas_by_alumno(nombre, apellido):
-    conn = Session()
-    result = conn.execute(text(QUERY_NOTA_POR_ALUMNO), {'nombre': nombre, 'apellido': apellido}).fetchall()
-    conn.close()
-
-    return result
+    return run_query(QUERY_NOTA_POR_ALUMNO, {'nombre': nombre, 'apellido': apellido}).fetchall()
 
 

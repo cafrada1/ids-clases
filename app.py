@@ -46,7 +46,7 @@ def add_alumno():
         if len(result) > 0:
             return jsonify({'error': 'El alumno ya existe'}), 400
 
-        insert_alumno(data)
+        alumnos.insert_alumno(data)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
