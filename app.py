@@ -4,9 +4,6 @@ import alumnos
 
 app = Flask(__name__)
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 @app.route('/api/v1/alumnos', methods=['GET'])
 def get_all_alumnos():
     try:
@@ -121,3 +118,7 @@ def get_notas_by_alumno(nombre, apellido):
         response.append({'nota': row[0], 'nombre': row[1], 'apellido': row[2]})
 
     return jsonify(response), 200
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
